@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AWADH KA SWAAD | Royal 3D Digital Menu</title>
+  
+  <!-- Google Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Marcellus&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            royal: {
+              dark: '#031E15',
+              deep: '#063526',
+              surface: '#0A4231',
+              card: '#0D4B38',
+              gold: '#EFBF32',
+              goldlight: '#FCE482',
+              golddark: '#C89B1A',
+              copper: '#C86D44',
+              cream: '#FFF9EA',
+              muted: '#A5C1B5'
+            }
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            marcellus: ['Marcellus', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #031E15;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #EFBF32;
+      border-radius: 9999px;
+    }
+
+    /* Royal Islamic/Awadhi Geometric Filigree Patterns */
+    .bg-awadhi-pattern {
+      background-color: #063526;
+      background-image: radial-gradient(rgba(239, 191, 50, 0.12) 1px, transparent 0), radial-gradient(rgba(200, 109, 68, 0.1) 1px, #063526 0);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+    }
+
+    .jali-border {
+      border-image: linear-gradient(135deg, #EFBF32 0%, #C86D44 50%, #EFBF32 100%) 1;
+    }
+
+    /* 3D Perspective Styles */
+    .perspective-container {
+      perspective: 1800px;
+      transform-style: preserve-3d;
+    }
+
+    .book-wrap {
+      transform-style: preserve-3d;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .book-cover-3d {
+      transform-origin: left center;
+      transition: transform 1.2s cubic-bezier(0.2, 0.85, 0.25, 1), box-shadow 1.2s ease;
+      box-shadow: 20px 25px 50px rgba(0, 0, 0, 0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+    }
+
+    .book-open .book-cover-3d {
+      transform: rotateY(-130deg);
+      pointer-events: none;
+    }
+
+    /* Floating card 3D tilt */
+    .card-3d-wrapper {
+      perspective: 900px;
+    }
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.22s ease-out, box-shadow 0.22s ease-out;
+    }
+
+    .gold-glow {
+      box-shadow: 0 0 25px rgba(239, 191, 50, 0.35);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF1B0 0%, #EFBF32 50%, #C89B1A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .shimmer-gold {
+      background: linear-gradient(90deg, transparent 0%, rgba(239, 191, 50, 0.25) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Veg symbol styling */
+    .veg-mark {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #22c55e;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px;
+    }
+    .veg-mark-circle {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background-color: #22c55e;
+    }
+
+    /* Ambient particles canvas */
+    #ambient-canvas {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+    }
+  </style>
+</head>
+
+<body class="bg-royal-dark text-royal-cream font-sans antialiased selection:bg-royal-gold selection:text-royal-dark min-h-screen overflow-x-hidden">
+
+  <!-- Canvas for Floating Gold Embers & Lights -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- ======================================================== -->
+  <!-- 1. CINEMATIC 3D OPENING SCREEN / ROYAL BOOK EXPERIENCE  -->
+  <!-- ======================================================== -->
+  <div id="landing-stage" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-dark bg-awadhi-pattern transition-opacity duration-1000">
+    <div class="perspective-container w-full max-w-md aspect-[3/4.4] sm:aspect-[3/4.1] relative">
+      
+      <!-- 3D Book Structure -->
+      <div id="royal-book" class="w-full h-full relative book-wrap flex items-center justify-center">
+        
+        <!-- Book Cover (Interactive Front) -->
+        <div id="book-front-cover" class="book-cover-3d absolute inset-0 rounded-2xl bg-gradient-to-br from-[#073c2c] via-[#04241a] to-[#01140e] border-2 border-royal-gold p-6 flex flex-col justify-between items-center text-center overflow-hidden z-20">
+          
+          <!-- Ornate Corner Motifs (Awadhi Royal Arch Inspired) -->
+          <div class="absolute top-3 left-3 w-16 h-16 border-t-2 border-l-2 border-royal-gold opacity-80 pointer-events-none rounded-tl-lg">
+            <span class="absolute top-1 left-1 text-royal-gold text-xs">✤</span>
+          </div>
+          <div class="absolute top-3 right-3 w-16 h-16 border-t-2 border-r-2 border-royal-gold opacity-80 pointer-events-none rounded-tr-lg">
+            <span class="absolute top-1 right-1 text-royal-gold text-xs">✤</span>
+          </div>
+          <div class="absolute bottom-3 left-3 w-16 h-20 border-b-2 border-l-2 border-royal-gold opacity-80 pointer-events-none rounded-bl-lg">
+            <span class="absolute bottom-1 left-1 text-royal-gold text-xs">✤</span>
+          </div>
+          <div class="absolute bottom-3 right-3 w-16 h-20 border-b-2 border-r-2 border-royal-gold opacity-80 pointer-events-none rounded-br-lg">
+            <span class="absolute bottom-1 right-1 text-royal-gold text-xs">✤</span>
+          </div>
+
+          <!-- Subtle Royal Jali Arch Backing -->
+          <div class="absolute inset-x-8 top-8 bottom-8 border border-royal-gold/30 rounded-xl pointer-events-none"></div>
+
+          <!-- Book Header Seal -->
+          <div class="mt-4 flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full border border-royal-gold/60 flex items-center justify-center bg-royal-deep/80 shadow-inner">
+              <svg viewBox="0 0 100 100" class="w-12 h-12 text-royal-gold fill-current">
+                <path d="M50 12 C30 12 18 28 18 42 C18 64 50 88 50 88 C50 88 82 64 82 42 C82 28 70 12 50 12 Z M50 25 C58 25 64 31 64 39 C64 47 50 64 50 64 C50 64 36 47 36 39 C36 31 42 25 50 25 Z" opacity="0.9"/>
+                <circle cx="50" cy="39" r="6" fill="#C86D44"/>
+              </svg>
+            </div>
+            <p class="text-[11px] tracking-[0.35em] text-royal-goldlight uppercase mt-2 font-cinzel">The Heritage Of Dastarkhwan</p>
+          </div>
+
+          <!-- Authentic Brand Centerpiece & Calligraphic Style Logo -->
+          <div class="my-auto px-4 z-10">
+            <!-- Custom Vector Logo matching original reference -->
+            <div class="flex flex-col items-center">
+              <div class="flex items-center gap-2 mb-1">
+                <!-- Chef Toque & Royal Culinary Spoon/Fork Motif -->
+                <svg viewBox="0 0 80 50" class="w-16 h-10 fill-current text-royal-gold drop-shadow">
+                  <path d="M22 24 C20 18 24 10 32 10 C36 10 40 13 41 17 C44 12 50 10 56 12 C62 14 65 20 62 26 C68 28 68 36 63 40 C58 43 25 43 22 40 C18 36 17 28 22 24 Z" fill="none" stroke="#EFBF32" stroke-width="2"/>
+                  <path d="M27 34 L58 34" stroke="#EFBF32" stroke-width="2"/>
+                  <path d="M30 38 L55 38" stroke="#C86D44" stroke-width="1.5"/>
+                  <path d="M68 12 L72 38 M65 14 L68 22" stroke="#EFBF32" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+
+              <!-- Hindi & English Script Royal Calligraphy -->
+              <h2 class="text-3xl font-bold tracking-wider text-royal-copper font-serif italic drop-shadow-md">
+                अवध <span class="text-xs uppercase tracking-widest text-royal-gold block not-italic -mt-1 font-sans">Ka Swaad</span>
+              </h2>
+
+              <div class="w-40 h-[1.5px] bg-gradient-to-r from-transparent via-royal-gold to-transparent my-3"></div>
+
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-widest font-cinzel text-royal-gold text-shadow">
+                AWADH KA SWAAD
+              </h1>
+              <p class="text-xs italic text-royal-cream/80 mt-2 font-marcellus max-w-xs leading-relaxed">
+                "Experience the Royal Taste of Awadh"
+              </p>
+            </div>
+          </div>
+
+          <!-- Footer & Interactive Open Trigger -->
+          <div class="w-full pb-2 z-10">
+            <button id="open-menu-btn" class="w-full relative group py-3 px-6 rounded-xl bg-gradient-to-r from-royal-golddark via-royal-gold to-royal-golddark text-royal-dark font-cinzel font-bold text-sm tracking-widest uppercase shadow-lg shadow-black/60 hover:shadow-royal-gold/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden">
+              <span class="absolute inset-0 shimmer-gold pointer-events-none"></span>
+              <span class="relative">EXPLORE OUR MENU</span>
+              <i class="fa-solid fa-angles-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </button>
+            <p class="text-[10px] text-royal-muted/70 mt-3 font-cinzel tracking-widest uppercase">
+              • Lucknowi Dum & Royal Delicacies •
+            </p>
+          </div>
+        </div>
+
+        <!-- Inside Revealed Preview (underneath the cover) -->
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#0c4734] to-[#04261c] border border-royal-gold/40 p-6 flex flex-col justify-center items-center text-center shadow-2xl">
+          <i class="fa-solid fa-utensils text-4xl text-royal-gold animate-bounce mb-3"></i>
+          <p class="text-royal-gold font-cinzel text-lg font-bold">Opening The Royal Archives...</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN APPLICATION WORKSPACE (REVEALED 3D MENU)        -->
+  <!-- ======================================================== -->
+  <div id="main-app" class="relative z-10 opacity-0 transition-opacity duration-1000 flex flex-col min-h-screen">
+
+    <!-- Top Royal Navigation Header -->
+    <header class="sticky top-0 z-40 bg-royal-dark/95 backdrop-blur-md border-b border-royal-gold/25 transition-all shadow-md shadow-black/40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        
+        <!-- Brand Identity & Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-royal-surface border border-royal-gold/50 flex items-center justify-center shadow-sm">
+            <span class="font-cinzel font-bold text-royal-gold text-lg">अव</span>
+          </div>
+          <div>
+            <span class="font-cinzel text-lg font-bold tracking-wider text-royal-gold block leading-tight">
+              AWADH KA SWAAD
+            </span>
+            <span class="text-[10px] tracking-widest text-royal-muted block uppercase font-cinzel">
+              Authentic Royal Cuisine
+            </span>
+          </div>
+        </div>
+
+        <!-- Actions: Royal Music, Search, Info & Cart -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Audio Ambience (Royal Sitar/Tanpura synthesiser) -->
+          <button id="music-btn" title="Toggle Royal Background Melody" class="w-9 h-9 rounded-full bg-royal-surface border border-royal-gold/40 text-royal-gold hover:text-white hover:border-royal-gold transition flex items-center justify-center relative">
+            <i id="music-icon" class="fa-solid fa-volume-xmark text-sm"></i>
+            <span id="music-pulse" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full animate-ping"></span>
+          </button>
+
+          <!-- Restaurant Contact / About Modal Button -->
+          <button id="info-btn" class="w-9 h-9 rounded-full bg-royal-surface border border-royal-gold/40 text-royal-gold hover:text-white hover:border-royal-gold transition flex items-center justify-center">
+            <i class="fa-solid fa-location-dot text-sm"></i>
+          </button>
+
+          <!-- Cart Trigger Button -->
+          <button id="open-cart-btn" class="relative bg-gradient-to-r from-royal-golddark to-royal-gold text-royal-dark px-3.5 py-1.5 rounded-lg font-cinzel font-bold text-xs tracking-wider flex items-center gap-2 shadow-md hover:scale-105 transition-all">
+            <i class="fa-solid fa-receipt text-sm"></i>
+            <span class="hidden sm:inline">ORDER</span>
+            <span id="cart-badge" class="bg-royal-dark text-royal-gold text-[11px] font-bold px-1.5 py-0.5 rounded-full border border-royal-gold/40">0</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Search & Filter Strip -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-royal-muted text-xs"></i>
+          <input 
+            type="text" 
+            id="search-input"
+            placeholder="Search our royal menu (e.g., Thali, Paneer, Mojito, Noodles)..."
+            class="w-full pl-9 pr-8 py-2 rounded-lg bg-royal-surface/90 border border-royal-gold/30 text-xs sm:text-sm text-royal-cream placeholder-royal-muted/60 focus:outline-none focus:border-royal-gold transition"
+          >
+          <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-royal-muted hover:text-royal-gold text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Smooth Category Navigation Strip -->
+      <div class="border-t border-royal-gold/15 bg-royal-surface/40 overflow-x-auto no-scrollbar py-2 px-4 sm:px-6">
+        <div id="category-pills" class="flex gap-2 min-w-max max-w-7xl mx-auto">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </header>
+
+
+    <!-- Main Page Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      
+      <!-- Royal Heritage Hero Banner -->
+      <div class="relative rounded-2xl overflow-hidden border border-royal-gold/30 bg-gradient-to-r from-royal-deep via-[#094834] to-royal-deep p-6 sm:p-8 mb-8 shadow-xl">
+        <div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none">
+          <svg viewBox="0 0 200 200" class="w-64 h-64 text-royal-gold fill-current">
+            <path d="M100 0 L130 70 L200 100 L130 130 L100 200 L70 130 L0 100 L70 70 Z"/>
+          </svg>
+        </div>
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-block py-1 px-3 rounded-full bg-royal-gold/20 border border-royal-gold/40 text-royal-goldlight font-cinzel text-[11px] font-semibold tracking-wider mb-2">
+            ROYAL AWADHI FEAST
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-cinzel font-bold text-royal-cream mb-2 leading-tight">
+            Crafted with Tradition, Served with <span class="gold-gradient-text">Nawabi Shaan</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-royal-muted leading-relaxed font-sans">
+            Every dish at Awadh Ka Swaad pays tribute to centuries-old recipes perfected in the royal kitchens of Awadh. Pure ingredients, slow-simmered gravies, and aromatic spice blends.
+          </p>
+        </div>
+      </div>
+
+      <!-- Active Menu Display Container -->
+      <div id="menu-sections-container" class="space-y-12">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Search No Results -->
+      <div id="no-results" class="hidden text-center py-16">
+        <i class="fa-solid fa-bowl-food text-4xl text-royal-muted mb-3"></i>
+        <h3 class="text-lg font-cinzel text-royal-gold">No Royal Delicacy Found</h3>
+        <p class="text-xs text-royal-muted mt-1">Try another keyword or browse our authentic categories above.</p>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-royal-gold/30 bg-royal-dark/90 py-8 px-4 text-center mt-auto">
+      <div class="max-w-4xl mx-auto flex flex-col items-center gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-6 h-[1px] bg-royal-gold"></div>
+          <p class="font-cinzel text-royal-gold font-bold tracking-widest text-sm">AWADH KA SWAAD</p>
+          <div class="w-6 h-[1px] bg-royal-gold"></div>
+        </div>
+        <p class="text-xs text-royal-muted font-sans">
+          Traditional Awadhi Heritage & Pure Indian Vegetarian Delights.
+        </p>
+        <p class="text-[11px] text-royal-muted/60 mt-1">
+          Open Daily: 11:00 AM – 11:00 PM • Dine-In & Takeaway
+        </p>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 3. ITEM DETAIL 3D MODAL VIEW                            -->
+  <!-- ======================================================== -->
+  <div id="item-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-royal-deep border-2 border-royal-gold rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-300">
+      
+      <!-- Close Button -->
+      <button id="close-modal-btn" class="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-royal-dark/80 text-royal-gold border border-royal-gold/40 flex items-center justify-center hover:bg-royal-gold hover:text-royal-dark transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Food Image with 3D Parallax Sheen -->
+      <div class="relative h-56 sm:h-64 overflow-hidden bg-royal-dark">
+        <img id="modal-img" src="" alt="" class="w-full h-full object-cover transform transition duration-500 hover:scale-105">
+        <div class="absolute inset-0 bg-gradient-to-t from-royal-deep via-transparent to-transparent"></div>
+        <div class="absolute bottom-3 left-4 flex items-center gap-2">
+          <span class="veg-mark rounded-sm bg-black/40"><span class="veg-mark-circle"></span></span>
+          <span id="modal-category" class="text-[10px] uppercase font-cinzel tracking-wider px-2 py-0.5 rounded bg-royal-gold/90 text-royal-dark font-bold">Category</span>
+        </div>
+      </div>
+
+      <!-- Food Content -->
+      <div class="p-6">
+        <div class="flex items-start justify-between gap-4">
+          <h3 id="modal-title" class="font-cinzel text-xl sm:text-2xl font-bold text-royal-gold"></h3>
+          <span id="modal-price" class="font-cinzel text-lg sm:text-xl font-bold text-royal-cream whitespace-nowrap"></span>
+        </div>
+
+        <p id="modal-desc" class="text-xs sm:text-sm text-royal-muted mt-2 leading-relaxed"></p>
+
+        <!-- Portion Selector (For Half / Full variants) -->
+        <div id="portion-selector-wrap" class="mt-4 pt-4 border-t border-royal-gold/20 hidden">
+          <label class="text-xs font-cinzel text-royal-gold block mb-2 font-semibold">SELECT PORTION SIZE:</label>
+          <div class="grid grid-cols-2 gap-3" id="portion-options">
+            <!-- Dynamic Half/Full options -->
+          </div>
+        </div>
+
+        <!-- Add to Order Button -->
+        <div class="mt-6 flex items-center gap-3">
+          <button id="modal-add-cart-btn" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-royal-golddark via-royal-gold to-royal-golddark text-royal-dark font-cinzel font-bold text-xs sm:text-sm tracking-wider uppercase hover:shadow-lg hover:shadow-royal-gold/30 active:scale-95 transition">
+            <i class="fa-solid fa-plus mr-1"></i> Add To Royal Tray
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 4. FLOATING / SLIDE-IN ROYAL CART DRAWER                 -->
+  <!-- ======================================================== -->
+  <div id="cart-drawer-backdrop" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden transition-opacity">
+    <div id="cart-drawer" class="absolute top-0 right-0 h-full w-full max-w-md bg-royal-deep border-l-2 border-royal-gold shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+      
+      <!-- Cart Header -->
+      <div class="p-4 sm:p-5 border-b border-royal-gold/30 bg-royal-dark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-utensils text-royal-gold"></i>
+          <h3 class="font-cinzel text-base sm:text-lg font-bold text-royal-gold">YOUR ROYAL SELECTION</h3>
+        </div>
+        <button id="close-cart-btn" class="w-8 h-8 rounded-full bg-royal-surface text-royal-gold border border-royal-gold/40 flex items-center justify-center hover:bg-royal-gold hover:text-royal-dark transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Table Number / Order Type Input -->
+      <div class="p-4 bg-royal-surface/60 border-b border-royal-gold/20">
+        <div class="flex gap-2">
+          <div class="flex-1">
+            <label class="text-[10px] font-cinzel uppercase text-royal-muted block mb-1">Dine-In Table No. / Guest Name</label>
+            <input type="text" id="order-table-input" placeholder="e.g. Table 4 or Mohit Sharma" class="w-full text-xs px-3 py-1.5 rounded bg-royal-dark border border-royal-gold/30 text-royal-cream focus:outline-none focus:border-royal-gold">
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Item List -->
+      <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+        <!-- Dynamic Cart Items -->
+      </div>
+
+      <!-- Empty Cart Message -->
+      <div id="cart-empty-state" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+        <i class="fa-solid fa-bowl-rice text-4xl text-royal-muted/40 mb-3"></i>
+        <p class="font-cinzel text-sm text-royal-gold">Your Royal Tray is Empty</p>
+        <p class="text-xs text-royal-muted mt-1">Select sumptuous delicacies from our menu to begin your feast.</p>
+      </div>
+
+      <!-- Cart Footer & Running Bill Summary -->
+      <div id="cart-footer" class="p-4 sm:p-5 bg-royal-dark border-t border-royal-gold/30 space-y-3 hidden">
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between text-royal-muted">
+            <span>Subtotal</span>
+            <span id="bill-subtotal">₹0</span>
+          </div>
+          <div class="flex justify-between text-royal-muted">
+            <span>GST (5% Restaurant Tax)</span>
+            <span id="bill-tax">₹0</span>
+          </div>
+          <div class="h-[1px] bg-royal-gold/20 my-1"></div>
+          <div class="flex justify-between text-sm sm:text-base font-cinzel font-bold text-royal-gold">
+            <span>Estimated Total</span>
+            <span id="bill-total">₹0</span>
+          </div>
+        </div>
+
+        <!-- WhatsApp Checkout Action -->
+        <button id="whatsapp-order-btn" class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-cinzel font-bold text-xs sm:text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-black/40 transition">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>PLACE ORDER ON WHATSAPP</span>
+        </button>
+        <p class="text-[10px] text-center text-royal-muted">
+          Your order will be instantly formatted & dispatched to the restaurant manager.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 5. RESTAURANT CONTACT & ABOUT MODAL                     -->
+  <!-- ======================================================== -->
+  <div id="info-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-royal-deep border-2 border-royal-gold rounded-2xl max-w-md w-full p-6 relative shadow-2xl">
+      <button id="close-info-btn" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-royal-dark text-royal-gold border border-royal-gold/40 flex items-center justify-center">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-4">
+        <h3 class="font-cinzel text-xl font-bold text-royal-gold">AWADH KA SWAAD</h3>
+        <p class="text-xs text-royal-muted italic mt-0.5">The Pure Culinary Soul of Awadh</p>
+      </div>
+
+      <div class="space-y-4 text-xs font-sans">
+        <div class="flex items-start gap-3 bg-royal-dark/60 p-3 rounded-lg border border-royal-gold/20">
+          <i class="fa-solid fa-location-dot text-royal-gold mt-1 text-sm"></i>
+          <div>
+            <p class="font-bold text-royal-gold font-cinzel">Heritage Location</p>
+            <p class="text-royal-muted mt-0.5">Civil Lines, Awadh Heritage Belt, Ayodhya / Lucknow Region, UP, India.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-royal-dark/60 p-3 rounded-lg border border-royal-gold/20">
+          <i class="fa-solid fa-clock text-royal-gold mt-1 text-sm"></i>
+          <div>
+            <p class="font-bold text-royal-gold font-cinzel">Serving Hours</p>
+            <p class="text-royal-muted mt-0.5">Lunch: 11:30 AM – 4:00 PM<br>Dinner: 7:00 PM – 11:00 PM (Open All 7 Days)</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-royal-dark/60 p-3 rounded-lg border border-royal-gold/20">
+          <i class="fa-solid fa-phone text-royal-gold mt-1 text-sm"></i>
+          <div>
+            <p class="font-bold text-royal-gold font-cinzel">Reservations & Queries</p>
+            <p class="text-royal-muted mt-0.5">+91 98765 43210 / info@awadhkaswaad.com</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <button onclick="document.getElementById('info-modal').classList.add('hidden')" class="w-full py-2.5 rounded-lg bg-royal-gold text-royal-dark font-cinzel font-bold text-xs uppercase">
+          Back To Menu
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 6. JAVASCRIPT LOGIC & DATA DEFINITION                   -->
+  <!-- ======================================================== -->
+  <script>
+    /* --------------------------------------------------------
+       A. AUTHENTIC MENU DATA (EXACT PRICES FROM SCREENSHOTS)
+    -------------------------------------------------------- */
+    const MENU_DATA = [
+      {
+        id: "thali",
+        title: "Thali",
+        icon: "🍛",
+        description: "Grand traditional platters curated with royal assortment, fresh breads, dal, and accompaniments.",
+        items: [
+          {
+            name: "Ghar Ki Thali",
+            price: 179,
+            image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=700&q=80",
+            desc: "Homestyle comfort platter featuring dal tadka, seasonal sabzi, steamed basmati rice, rotis, salad and pickle.",
+            veg: true,
+            hasHalf: false
+          },
+          {
+            name: "Deluxe Thali",
+            price: 249,
+            image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80",
+            desc: "Royal indulgence with Shahi Paneer, special dal makhani, seasonal vegetable, pulao, butter naans, raita & dessert.",
+            veg: true,
+            hasHalf: false
+          },
+          {
+            name: "Awadh Ki Special Thali (Serves 2)",
+            price: 349,
+            image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=700&q=80",
+            desc: "Generous royal feast for two: 2 Paneer specialties, artisanal dal, Awadhi fragrant rice, assorted breads, sweet delicacy.",
+            veg: true,
+            hasHalf: false
+          },
+          {
+            name: "Unlimited Thali (Serves 4)",
+            price: 999,
+            image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=80",
+            desc: "Grand family dastarkhwan. Unlimited servings of our signature Awadhi curries, tandoori rotis, starters & desserts.",
+            veg: true,
+            hasHalf: false
+          }
+        ]
+      },
+      {
+        id: "beverages",
+        title: "Beverages & Refreshments",
+        icon: "☕",
+        description: "Classic brewed tea, handcrafted coffees, and timeless Indian refreshments.",
+        items: [
+          { name: "Hot Coffee", price: 49, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80", desc: "Aromatic slow-frothed royal coffee beans.", veg: true },
+          { name: "Tea", price: 39, image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=700&q=80", desc: "Traditional ginger cardamom milk tea.", veg: true },
+          { name: "Green Tea", price: 49, image: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?auto=format&fit=crop&w=700&q=80", desc: "Calming herbal green tea infusion.", veg: true },
+          { name: "Black Coffee", price: 49, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80", desc: "Bold espresso roast drip coffee.", veg: true },
+          { name: "Cold Drink", price: 45, isMRP: true, image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=700&q=80", desc: "Assorted chilled canned & bottled sodas (MRP).", veg: true },
+          { name: "Lassi", price: 89, image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=700&q=80", desc: "Thick creamy sweet curd whipped with saffron & pistachios.", veg: true },
+          { name: "Cold Coffee (Plain)", price: 99, image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=700&q=80", desc: "Chilled blended mocha cream coffee.", veg: true },
+          { name: "Cold Coffee with Ice Cream", price: 149, image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=700&q=80", desc: "Blended thick coffee topped with artisanal vanilla scoop.", veg: true },
+          { name: "Chaas", price: 69, image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=700&q=80", desc: "Spiced cooling buttermilk tempered with cumin & mint.", veg: true },
+          { name: "Jal Jeera", price: 59, image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80", desc: "Tangy cumin, lemon & black salt digestive refresher.", veg: true }
+        ]
+      },
+      {
+        id: "mocktails",
+        title: "Mocktails & Coolers",
+        icon: "🍹",
+        description: "Artisanal handcrafted chilled blends and Awadhi garden coolers.",
+        items: [
+          { name: "Virgin Mojito", price: 149, image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=700&q=80", desc: "Crushed garden mint, fresh lime wedges and sparkling fizz.", veg: true },
+          { name: "Blue Lagoon", price: 149, image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80", desc: "Electric curacao flavor infused with citrus soda.", veg: true },
+          { name: "Lychee Delight", price: 149, image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=700&q=80", desc: "Sweet exotic lychee nectar layered over crushed ice.", veg: true },
+          { name: "Fresh Lime Soda (Sweet/Salt)", price: 149, image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80", desc: "Fresh hand-squeezed lime topped with sparkling club soda.", veg: true },
+          { name: "Lemon Ice Tea", price: 149, image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=700&q=80", desc: "Brewed black tea chilled with Meyer lemon and mountain honey.", veg: true }
+        ]
+      },
+      {
+        id: "soups",
+        title: "Soups",
+        icon: "🍲",
+        description: "Warm, slow-simmered broths with hand-picked spices.",
+        items: [
+          { name: "Tomato Soup", price: 149, image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=700&q=80", desc: "Ripe tomatoes roasted with bay leaf and fresh cream croutons.", veg: true },
+          { name: "Hot & Sour Soup", price: 149, image: "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=700&q=80", desc: "Spicy dark broth loaded with bamboo shoots and shredded vegetables.", veg: true },
+          { name: "Sweet Corn Soup", price: 149, image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80", desc: "Velvety corn reduction paired with seasonal tender diced greens.", veg: true },
+          { name: "Veg. Manchow Soup", price: 169, image: "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=700&q=80", desc: "Hearty garlic ginger soup served with golden crispy noodles.", veg: true }
+        ]
+      },
+      {
+        id: "main-course",
+        title: "Royal Main Course",
+        icon: "👑",
+        description: "The crown jewels of Awadh. Rich slow-cooked curries, paneer masterpieces, and fragrant dals.",
+        items: [
+          { name: "Shahi Paneer", halfPrice: 199, price: 329, hasHalf: true, image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=700&q=80", desc: "Melt-in-mouth cottage cheese in a royal cashew, almond & cardamom gravy.", veg: true },
+          { name: "Kadhai Paneer", halfPrice: 209, price: 349, hasHalf: true, image: "https://images.unsplash.com/photo-1567184109191-3783b320850b?auto=format&fit=crop&w=700&q=80", desc: "Fresh cottage cheese tossed with bell peppers and freshly ground kadhai spices.", veg: true },
+          { name: "Paneer Butter Masala", halfPrice: 219, price: 369, hasHalf: true, image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=700&q=80", desc: "Silky tomato reduction laden with butter, cream and gentle Awadhi kasoori methi.", veg: true },
+          { name: "Paneer Bhurji", halfPrice: 239, price: 399, hasHalf: true, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=700&q=80", desc: "Finely scrambled fresh paneer sautéed with onions, green chilies and coriander.", veg: true },
+          { name: "Seasonal Veg.", price: 299, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Fresh market garden vegetables cooked in light cumin spices.", veg: true },
+          { name: "Palak Paneer", price: 299, image: "https://images.unsplash.com/photo-1589647364468-789f838b2c18?auto=format&fit=crop&w=700&q=80", desc: "Pureed farm spinach simmered with paneer cubes and garlic tempering.", veg: true },
+          { name: "Aloo Matar", price: 299, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=80", desc: "Golden potatoes and sweet green peas simmered in onion-tomato gravy.", veg: true },
+          { name: "Matar Paneer", price: 299, image: "https://images.unsplash.com/photo-1567184109191-3783b320850b?auto=format&fit=crop&w=700&q=80", desc: "Classic combination of soft paneer and green peas in spiced curry.", veg: true },
+          { name: "Matar Mushroom", price: 299, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Button mushrooms and green peas in a savory brown onion reduction.", veg: true },
+          { name: "Punjabi Chole", halfPrice: 109, price: 199, hasHalf: true, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=80", desc: "Authentic dark chickpeas slow-cooked with roasted anardana and tea leaves.", veg: true },
+          { name: "Mix Veg.", price: 299, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Assorted vegetables cooked in traditional semi-dry masala.", veg: true },
+          { name: "Dal Tadka", price: 229, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Yellow lentils tempered with ghee, cumin, garlic, and dried red chilies.", veg: true },
+          { name: "Dal Fry", price: 229, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Smooth yellow lentils fried with onions, tomatoes and fresh coriander.", veg: true },
+          { name: "Dal Handi", price: 269, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Clay-pot slow-cooked lentils with authentic Awadhi whole spice infusion.", veg: true },
+          { name: "Dal Makhani", price: 299, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Black urad lentils simmered overnight on charcoal with butter & cream.", veg: true },
+          { name: "Jeera Aloo", price: 149, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=80", desc: "Crispy baby potatoes tossed with roasted cumin seeds and turmeric.", veg: true },
+          { name: "Aloo Gobhi", price: 179, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=80", desc: "Cauliflower florets and tender potatoes stir-fried with ginger and spices.", veg: true },
+          { name: "Sev Tomato", price: 249, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Tangy spiced tomato gravy topped with crispy gram flour sev.", veg: true },
+          { name: "Bhindi Fry", halfPrice: 199, price: 249, hasHalf: true, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Crisp-fried okra sprinkled with dry mango powder and chaat spices.", veg: true },
+          { name: "Bhindi Masala", halfPrice: 199, price: 249, hasHalf: true, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Fresh tender okra tossed in onion tomato gravy.", veg: true }
+        ]
+      },
+      {
+        id: "chinese",
+        title: "Appetizers & Chinese",
+        icon: "🥗",
+        description: "Indo-Chinese fusion delicacies wok-tossed on high flame with fragrant spices.",
+        items: [
+          { name: "Chilly Paneer (Dry)", halfPrice: 159, price: 269, hasHalf: true, image: "https://images.unsplash.com/photo-1567184109191-3783b320850b?auto=format&fit=crop&w=700&q=80", desc: "Wok-tossed paneer cubes with bell peppers, green chilies and dark soy.", veg: true },
+          { name: "Chilly Paneer (Gravy)", halfPrice: 169, price: 289, hasHalf: true, image: "https://images.unsplash.com/photo-1567184109191-3783b320850b?auto=format&fit=crop&w=700&q=80", desc: "Cottage cheese cubes in a savory, spicy garlic and chili sauce.", veg: true },
+          { name: "Veg. Manchurian (Dry)", halfPrice: 149, price: 249, hasHalf: true, image: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=700&q=80", desc: "Crisp vegetable dumplings tossed in ginger, garlic and spring onion.", veg: true },
+          { name: "Veg. Manchurian (Gravy)", halfPrice: 159, price: 269, hasHalf: true, image: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=700&q=80", desc: "Vegetable rounds simmered in savory Chinese gravy.", veg: true },
+          { name: "Hakka Noodles", halfPrice: 129, price: 219, hasHalf: true, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80", desc: "Classic noodles stir-fried with julienned vegetables and white pepper.", veg: true },
+          { name: "Veg. Chowmien", halfPrice: 119, price: 199, hasHalf: true, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80", desc: "Desi street-style wok tossed noodles with cabbage and capsicum.", veg: true },
+          { name: "Paneer Chowmien", halfPrice: 149, price: 249, hasHalf: true, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80", desc: "Wok-fried noodles loaded with diced fresh paneer.", veg: true },
+          { name: "Veg. Fried Rice", halfPrice: 129, price: 210, hasHalf: true, image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80", desc: "Fluffy aromatic rice wok-tossed with garden vegetables.", veg: true },
+          { name: "Paneer Fried Rice", halfPrice: 149, price: 249, hasHalf: true, image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80", desc: "Basmati rice wok tossed with diced paneer cubes and scallions.", veg: true },
+          { name: "Chilli Mushroom", price: 299, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80", desc: "Crisp batter-fried button mushrooms with chili sauce and spring onions.", veg: true }
+        ]
+      },
+      {
+        id: "combos",
+        title: "Special Combos",
+        icon: "🍱",
+        description: "Wholesome and delicious dual-dish combinations prepared fresh to order.",
+        items: [
+          { name: "Veg Manchurian + Fried Rice", price: 269, image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80", desc: "Savory vegetable Manchurian gravy served alongside aromatic veg fried rice.", veg: true },
+          { name: "Veg Manchurian + Noodles", price: 269, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80", desc: "Classic Manchurian gravy paired with delicious wok tossed Hakka noodles.", veg: true },
+          { name: "Chilly Paneer + Fried Rice", price: 289, image: "https://images.unsplash.com/photo-1567184109191-3783b320850b?auto=format&fit=crop&w=700&q=80", desc: "Spicy chilly paneer gravy accompanied by fragrant vegetable fried rice.", veg: true },
+          { name: "Chilly Paneer + Noodles", price: 289, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80", desc: "Zesty chilly paneer paired with freshly cooked Hakka noodles.", veg: true }
+        ]
+      },
+      // Placeholders for Categories where specific pricing will be updated from restaurant kitchen
+      {
+        id: "starters",
+        title: "Starters (Awadhi Kebabs)",
+        icon: "🍢",
+        isPlaceholder: true,
+        description: "Mouth-melting galouti & dahi ke kebabs. Chef's seasonal selection being refreshed.",
+        placeholderText: "Chef's Special Awadhi Tandoor & Galawat selections being curated. Please enquire with your server for today's live royal platter."
+      },
+      {
+        id: "biryani",
+        title: "Biryani & Rice",
+        icon: "🍚",
+        isPlaceholder: true,
+        description: "Awadhi Dum Pukht aromatic basmati delicacies.",
+        placeholderText: "Slow-cooked handi Awadhi Subz Biryani & Zafrani Pulao details arriving shortly. Please ask your server for availability."
+      },
+      {
+        id: "breads",
+        title: "Indian Breads",
+        icon: "🫓",
+        isPlaceholder: true,
+        description: "Tandoori Roti, Naan, Lachha Paratha, Sheermal & Roomali.",
+        placeholderText: "Clay tandoor fresh breads available: Butter Naan, Garlic Naan, Sheermal & Paratha. Enquire with server for live pricing."
+      },
+      {
+        id: "desserts",
+        title: "Desserts (Meetha)",
+        icon: "🍨",
+        isPlaceholder: true,
+        description: "Shahi Tukda, Phirni & Gulab Jamun.",
+        placeholderText: "Traditional Nawabi sweet endings including Kesar Phirni & Malai Kulfi. Freshly made daily."
+      }
+    ];
+
+    /* --------------------------------------------------------
+       B. STATE MANAGEMENT
+    -------------------------------------------------------- */
+    let cart = [];
+    let currentModalItem = null;
+    let selectedPortion = 'full'; // 'half' or 'full'
+
+    /* --------------------------------------------------------
+       C. PROCEDURAL ROYAL AMBIENT SOUND (WEB AUDIO API)
+       Pure synthesized Tanpura/Sitar Drone - Zero external audio file failures!
+    -------------------------------------------------------- */
+    let audioCtx = null;
+    let isPlayingMusic = false;
+    let musicNodes = [];
+
+    function initRoyalAudio() {
+      if (audioCtx) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+
+    function toggleMusic() {
+      if (!audioCtx) initRoyalAudio();
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      if (!isPlayingMusic) {
+        startRoyalMelody();
+        isPlayingMusic = true;
+        document.getElementById('music-icon').className = 'fa-solid fa-volume-high text-sm';
+        document.getElementById('music-pulse').classList.remove('hidden');
+      } else {
+        stopRoyalMelody();
+        isPlayingMusic = false;
+        document.getElementById('music-icon').className = 'fa-solid fa-volume-xmark text-sm';
+        document.getElementById('music-pulse').classList.add('hidden');
+      }
+    }
+
+    function startRoyalMelody() {
+      // Indian classical fundamental drone chord: C# (Sa - Pa - Sa)
+      const baseFreq = 138.59; // C#3
+      const dronePitches = [baseFreq, baseFreq * 1.5, baseFreq * 2]; // Sa, Pa, high Sa
+
+      musicNodes = [];
+
+      dronePitches.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = i === 1 ? 'triangle' : 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // Lowpass filter for warm acoustic sitar/tanpura resonance
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450 + (i * 120), audioCtx.currentTime);
+
+        // Gentle volume envelope
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.045 / (i + 1), audioCtx.currentTime + 3);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        musicNodes.push({ osc, gain });
+      });
+    }
+
+    function stopRoyalMelody() {
+      musicNodes.forEach(({ osc, gain }) => {
+        try {
+          gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+          setTimeout(() => osc.stop(), 800);
+        } catch(e) {}
+      });
+      musicNodes = [];
+    }
+
+    /* --------------------------------------------------------
+       D. PARTICLES / AMBIENT CANVAS (GOLD EMBERS & SPARKLES)
+    -------------------------------------------------------- */
+    function initAmbientParticles() {
+      const canvas = document.getElementById('ambient-canvas');
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      const particleCount = Math.min(30, Math.floor(window.innerWidth / 30));
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2 + 0.8,
+          speedY: Math.random() * -0.4 - 0.15,
+          speedX: (Math.random() - 0.5) * 0.25,
+          alpha: Math.random() * 0.7 + 0.2,
+          pulse: Math.random() * 0.02
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.alpha += Math.sin(Date.now() * 0.002) * p.pulse;
+
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(239, 191, 50, ${Math.max(0.1, Math.min(0.85, p.alpha))})`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#EFBF32';
+          ctx.fill();
+        });
+
+        requestAnimationFrame(render);
+      }
+      render();
+    }
+
+    /* --------------------------------------------------------
+       E. RENDER CATEGORIES & MENU CARDS
+    -------------------------------------------------------- */
+    function renderCategoryNavigation() {
+      const pillsContainer = document.getElementById('category-pills');
+      pillsContainer.innerHTML = '';
+
+      MENU_DATA.forEach((cat, index) => {
+        const btn = document.createElement('a');
+        btn.href = `#cat-${cat.id}`;
+        btn.className = `px-3.5 py-1.5 rounded-full text-xs font-cinzel font-semibold tracking-wider whitespace-nowrap transition-all border ${
+          index === 0 
+            ? 'bg-royal-gold text-royal-dark border-royal-gold' 
+            : 'bg-royal-dark/60 text-royal-cream/90 border-royal-gold/30 hover:border-royal-gold'
+        }`;
+        btn.innerHTML = `${cat.icon} ${cat.title}`;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelectorAll('#category-pills a').forEach(el => {
+            el.className = 'px-3.5 py-1.5 rounded-full text-xs font-cinzel font-semibold tracking-wider whitespace-nowrap transition-all border bg-royal-dark/60 text-royal-cream/90 border-royal-gold/30 hover:border-royal-gold';
+          });
+          btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-cinzel font-semibold tracking-wider whitespace-nowrap transition-all border bg-royal-gold text-royal-dark border-royal-gold shadow-md';
+          const target = document.getElementById(`cat-${cat.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+        pillsContainer.appendChild(btn);
+      });
+    }
+
+    function renderMenuCards() {
+      const container = document.getElementById('menu-sections-container');
+      container.innerHTML = '';
+
+      MENU_DATA.forEach(section => {
+        const sectionEl = document.createElement('section');
+        sectionEl.id = `cat-${section.id}`;
+        sectionEl.className = 'menu-section scroll-mt-28';
+
+        // Section Title
+        let headerHtml = `
+          <div class="flex items-center gap-3 mb-2 border-b border-royal-gold/20 pb-2">
+            <span class="text-2xl">${section.icon}</span>
+            <div>
+              <h3 class="text-xl sm:text-2xl font-cinzel font-bold text-royal-gold uppercase tracking-wide">
+                ${section.title}
+              </h3>
+              <p class="text-xs text-royal-muted font-sans">${section.description}</p>
+            </div>
+          </div>
+        `;
+
+        if (section.isPlaceholder) {
+          headerHtml += `
+            <div class="mt-4 p-5 rounded-xl border border-dashed border-royal-gold/40 bg-royal-surface/30 text-center">
+              <i class="fa-solid fa-crown text-2xl text-royal-gold mb-2"></i>
+              <p class="font-cinzel text-sm text-royal-goldlight font-semibold">${section.placeholderText}</p>
+              <p class="text-xs text-royal-muted mt-1">Authentic preparations made freshly upon royal request.</p>
+            </div>
+          `;
+          sectionEl.innerHTML = headerHtml;
+          container.appendChild(sectionEl);
+          return;
+        }
+
+        // Grid of 3D Cards
+        let cardsGrid = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-4">`;
+
+        section.items.forEach((item, itemIdx) => {
+          const itemKey = `${section.id}_${itemIdx}`;
+          const displayPrice = item.hasHalf 
+            ? `Half ₹${item.halfPrice} | Full ₹${item.price}` 
+            : (item.isMRP ? 'MRP' : `₹${item.price}`);
+
+          cardsGrid += `
+            <div class="card-3d-wrapper" data-item-name="${item.name.toLowerCase()}">
+              <div 
+                class="card-3d h-full rounded-2xl bg-gradient-to-b from-royal-card to-[#093a2b] border border-royal-gold/30 hover:border-royal-gold p-3.5 flex flex-col justify-between shadow-lg shadow-black/40 hover:shadow-royal-gold/20 transition-all cursor-pointer group"
+                onclick="openItemModal('${section.id}', ${itemIdx})"
+                onmousemove="handle3DCardTilt(event, this)"
+                onmouseleave="reset3DCardTilt(this)"
+              >
+                <!-- Image & Veg Badge -->
+                <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-royal-dark mb-3">
+                  <img 
+                    src="${item.image}" 
+                    alt="${item.name}" 
+                    loading="lazy"
+                    class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
+                    onerror="this.src='https://placehold.co/600x450/063526/EFBF32?text=${encodeURIComponent(item.name)}'"
+                  >
+                  <div class="absolute inset-0 bg-gradient-to-t from-royal-dark/90 via-transparent to-transparent"></div>
+                  
+                  <div class="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm p-1 rounded-sm border border-black/40">
+                    <span class="veg-mark"><span class="veg-mark-circle"></span></span>
+                  </div>
+
+                  <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded text-[10px] font-cinzel font-bold bg-royal-dark/90 text-royal-gold border border-royal-gold/40">
+                    ${displayPrice}
+                  </span>
+                </div>
+
+                <!-- Info -->
+                <div class="flex-grow flex flex-col justify-between">
+                  <div>
+                    <h4 class="font-cinzel text-base font-bold text-royal-cream group-hover:text-royal-gold transition-colors line-clamp-1">
+                      ${item.name}
+                    </h4>
+                    <p class="text-[11px] text-royal-muted font-sans line-clamp-2 mt-1 leading-relaxed">
+                      ${item.desc}
+                    </p>
+                  </div>
+
+                  <!-- Quick Add Button -->
+                  <div class="mt-3 pt-2.5 border-t border-royal-gold/15 flex items-center justify-between">
+                    <span class="text-xs font-cinzel font-bold text-royal-gold">
+                      ${item.hasHalf ? `From ₹${item.halfPrice}` : (item.isMRP ? 'MRP' : `₹${item.price}`)}
+                    </span>
+                    <button 
+                      onclick="event.stopPropagation(); quickAddToCart('${section.id}', ${itemIdx})"
+                      class="px-3 py-1 rounded-lg bg-royal-gold/20 hover:bg-royal-gold text-royal-gold hover:text-royal-dark border border-royal-gold/50 text-[11px] font-cinzel font-bold uppercase transition flex items-center gap-1"
+                    >
+                      <i class="fa-solid fa-plus text-[10px]"></i> Add
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          `;
+        });
+
+        cardsGrid += `</div>`;
+        sectionEl.innerHTML = headerHtml + cardsGrid;
+        container.appendChild(sectionEl);
+      });
+    }
+
+    /* --------------------------------------------------------
+       F. 3D CARD PARALLAX TILT EFFECT
+    -------------------------------------------------------- */
+    function handle3DCardTilt(e, card) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -9; // Max 9 deg
+      const rotateY = ((x - centerX) / centerX) * 9;
+
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    }
+
+    function reset3DCardTilt(card) {
+      card.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+    }
+
+    /* --------------------------------------------------------
+       G. MODAL DETAIL VIEW & PORTION SELECTION
+    -------------------------------------------------------- */
+    function openItemModal(catId, itemIdx) {
+      const section = MENU_DATA.find(s => s.id === catId);
+      if (!section) return;
+      const item = section.items[itemIdx];
+      if (!item) return;
+
+      currentModalItem = { ...item, catTitle: section.title };
+      selectedPortion = item.hasHalf ? 'half' : 'full';
+
+      document.getElementById('modal-img').src = item.image;
+      document.getElementById('modal-img').onerror = function() {
+        this.src = `https://placehold.co/600x450/063526/EFBF32?text=${encodeURIComponent(item.name)}`;
+      };
+      document.getElementById('modal-title').textContent = item.name;
+      document.getElementById('modal-desc').textContent = item.desc;
+      document.getElementById('modal-category').textContent = section.title;
+
+      updateModalPriceDisplay();
+
+      const portionWrap = document.getElementById('portion-selector-wrap');
+      const portionOptions = document.getElementById('portion-options');
+
+      if (item.hasHalf) {
+        portionWrap.classList.remove('hidden');
+        portionOptions.innerHTML = `
+          <button 
+            type="button" 
+            onclick="selectModalPortion('half')" 
+            id="opt-half"
+            class="p-2.5 rounded-lg border text-xs font-cinzel font-bold flex flex-col items-center transition ${selectedPortion === 'half' ? 'border-royal-gold bg-royal-gold/20 text-royal-gold' : 'border-royal-gold/30 text-royal-muted'}"
+          >
+            <span>HALF PORTION</span>
+            <span class="text-sm font-sans mt-0.5">₹${item.halfPrice}</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="selectModalPortion('full')" 
+            id="opt-full"
+            class="p-2.5 rounded-lg border text-xs font-cinzel font-bold flex flex-col items-center transition ${selectedPortion === 'full' ? 'border-royal-gold bg-royal-gold/20 text-royal-gold' : 'border-royal-gold/30 text-royal-muted'}"
+          >
+            <span>FULL PORTION</span>
+            <span class="text-sm font-sans mt-0.5">₹${item.price}</span>
+          </button>
+        `;
+      } else {
+        portionWrap.classList.add('hidden');
+      }
+
+      document.getElementById('item-modal').classList.remove('hidden');
+      document.getElementById('item-modal').classList.add('flex');
+    }
+
+    function selectModalPortion(portion) {
+      selectedPortion = portion;
+      document.querySelectorAll('#portion-options button').forEach(b => {
+        b.className = 'p-2.5 rounded-lg border border-royal-gold/30 text-xs font-cinzel font-bold flex flex-col items-center transition text-royal-muted';
+      });
+      const activeBtn = document.getElementById(`opt-${portion}`);
+      if (activeBtn) {
+        activeBtn.className = 'p-2.5 rounded-lg border border-royal-gold bg-royal-gold/20 text-xs font-cinzel font-bold flex flex-col items-center transition text-royal-gold';
+      }
+      updateModalPriceDisplay();
+    }
+
+    function updateModalPriceDisplay() {
+      if (!currentModalItem) return;
+      let cost;
+      if (currentModalItem.hasHalf && selectedPortion === 'half') {
+        cost = `₹${currentModalItem.halfPrice}`;
+      } else {
+        cost = currentModalItem.isMRP ? 'MRP' : `₹${currentModalItem.price}`;
+      }
+      document.getElementById('modal-price').textContent = cost;
+    }
+
+    /* --------------------------------------------------------
+       H. CART & ORDER TRAY MANAGEMENT
+    -------------------------------------------------------- */
+    function quickAddToCart(catId, itemIdx) {
+      const section = MENU_DATA.find(s => s.id === catId);
+      if (!section) return;
+      const item = section.items[itemIdx];
+      if (!item) return;
+
+      const portion = item.hasHalf ? 'Full' : 'Standard';
+      const price = item.price;
+
+      addItemToCartArray(item.name, portion, price);
+      triggerOrderDrawerBriefly();
+    }
+
+    document.getElementById('modal-add-cart-btn').addEventListener('click', () => {
+      if (!currentModalItem) return;
+      const portionText = currentModalItem.hasHalf ? (selectedPortion === 'half' ? 'Half' : 'Full') : 'Standard';
+      const finalPrice = (currentModalItem.hasHalf && selectedPortion === 'half') ? currentModalItem.halfPrice : currentModalItem.price;
+
+      addItemToCartArray(currentModalItem.name, portionText, finalPrice);
+      document.getElementById('item-modal').classList.add('hidden');
+      document.getElementById('item-modal').classList.remove('flex');
+      toggleCartDrawer(true);
+    });
+
+    function addItemToCartArray(name, portion, price) {
+      const cartKey = `${name}_${portion}`;
+      const existing = cart.find(i => i.key === cartKey);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          key: cartKey,
+          name: name,
+          portion: portion,
+          price: price,
+          qty: 1
+        });
+      }
+      renderCartUI();
+    }
+
+    function updateCartQty(key, delta) {
+      const item = cart.find(i => i.key === key);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.key !== key);
+      }
+      renderCartUI();
+    }
+
+    function renderCartUI() {
+      const totalCount = cart.reduce((acc, curr) => acc + curr.qty, 0);
+      document.getElementById('cart-badge').textContent = totalCount;
+
+      const listContainer = document.getElementById('cart-items-container');
+      const emptyState = document.getElementById('cart-empty-state');
+      const footer = document.getElementById('cart-footer');
+
+      if (cart.length === 0) {
+        listContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        footer.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      footer.classList.remove('hidden');
+
+      let subtotal = 0;
+      listContainer.innerHTML = '';
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+
+        const row = document.createElement('div');
+        row.className = 'bg-royal-dark/70 border border-royal-gold/25 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm';
+        row.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <h5 class="font-cinzel text-xs font-bold text-royal-cream truncate">${item.name}</h5>
+            <p class="text-[10px] text-royal-gold font-sans">${item.portion !== 'Standard' ? item.portion + ' • ' : ''}₹${item.price} each</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center bg-royal-surface border border-royal-gold/40 rounded-lg overflow-hidden">
+              <button onclick="updateCartQty('${item.key}', -1)" class="w-6 h-6 text-royal-gold hover:bg-royal-gold hover:text-royal-dark transition flex items-center justify-center text-xs font-bold">-</button>
+              <span class="w-6 text-center text-xs font-semibold text-royal-cream">${item.qty}</span>
+              <button onclick="updateCartQty('${item.key}', 1)" class="w-6 h-6 text-royal-gold hover:bg-royal-gold hover:text-royal-dark transition flex items-center justify-center text-xs font-bold">+</button>
+            </div>
+            <span class="font-cinzel text-xs font-bold text-royal-gold w-14 text-right">₹${itemTotal}</span>
+          </div>
+        `;
+        listContainer.appendChild(row);
+      });
+
+      const tax = Math.round(subtotal * 0.05); // 5% GST
+      const grandTotal = subtotal + tax;
+
+      document.getElementById('bill-subtotal').textContent = `₹${subtotal}`;
+      document.getElementById('bill-tax').textContent = `₹${tax}`;
+      document.getElementById('bill-total').textContent = `₹${grandTotal}`;
+    }
+
+    function toggleCartDrawer(open) {
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      const drawer = document.getElementById('cart-drawer');
+
+      if (open) {
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          drawer.classList.remove('translate-x-full');
+        }, 10);
+      } else {
+        drawer.classList.add('translate-x-full');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    function triggerOrderDrawerBriefly() {
+      // Visual feedback on cart button
+      const badge = document.getElementById('cart-badge');
+      badge.classList.add('scale-125', 'bg-royal-gold', 'text-royal-dark');
+      setTimeout(() => {
+        badge.classList.remove('scale-125', 'bg-royal-gold', 'text-royal-dark');
+      }, 300);
+    }
+
+    /* --------------------------------------------------------
+       I. WHATSAPP INSTANT ORDER DISPATCH
+    -------------------------------------------------------- */
+    document.getElementById('whatsapp-order-btn').addEventListener('click', () => {
+      if (cart.length === 0) return;
+
+      const tableInput = document.getElementById('order-table-input').value.trim() || 'General Dining / Guest';
+      let message = `*🕌 AWADH KA SWAAD - ROYAL ORDER REQUEST* 🕌\n`;
+      message += `------------------------------------\n`;
+      message += `*Customer/Table:* ${tableInput}\n`;
+      message += `*Date/Time:* ${new Date().toLocaleString('en-IN')}\n`;
+      message += `------------------------------------\n\n`;
+      message += `*ORDER DELICACIES:*\n`;
+
+      let subtotal = 0;
+      cart.forEach((item, idx) => {
+        const itemSum = item.price * item.qty;
+        subtotal += itemSum;
+        message += `${idx + 1}. *${item.name}* (${item.portion}) x ${item.qty} = ₹${itemSum}\n`;
+      });
+
+      const tax = Math.round(subtotal * 0.05);
+      const total = subtotal + tax;
+
+      message += `\n------------------------------------\n`;
+      message += `*Subtotal:* ₹${subtotal}\n`;
+      message += `*GST (5%):* ₹${tax}\n`;
+      message += `*GRAND TOTAL:* ₹${total}\n`;
+      message += `------------------------------------\n`;
+      message += `_Kindly confirm my order and table preparation!_ ✨`;
+
+      // Official WhatsApp deep link (Restaurant primary contact)
+      const encoded = encodeURIComponent(message);
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=919876543210&text=${encoded}`;
+      window.open(whatsappUrl, '_blank');
+    });
+
+    /* --------------------------------------------------------
+       J. SEARCH FUNCTIONALITY
+    -------------------------------------------------------- */
+    const searchInput = document.getElementById('search-input');
+    const clearSearch = document.getElementById('clear-search');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      clearSearch.classList.toggle('hidden', query.length === 0);
+
+      const cards = document.querySelectorAll('.card-3d-wrapper');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const itemName = card.getAttribute('data-item-name');
+        if (itemName.includes(query)) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Hide/Show Section titles if all cards in that section are hidden
+      document.querySelectorAll('.menu-section').forEach(sec => {
+        const visibleInSec = sec.querySelectorAll('.card-3d-wrapper:not(.hidden)').length;
+        if (visibleInSec === 0 && !sec.querySelector('.border-dashed')) {
+          sec.classList.add('hidden');
+        } else {
+          sec.classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('no-results').classList.toggle('hidden', visibleCount > 0 || query.length === 0);
+    });
+
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearch.classList.add('hidden');
+      document.querySelectorAll('.card-3d-wrapper').forEach(c => c.classList.remove('hidden'));
+      document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('hidden'));
+      document.getElementById('no-results').classList.add('hidden');
+    });
+
+    /* --------------------------------------------------------
+       K. CINEMATIC 3D BOOK OPEN TRANSITION
+    -------------------------------------------------------- */
+    document.getElementById('open-menu-btn').addEventListener('click', () => {
+      const bookContainer = document.getElementById('royal-book');
+      const landingStage = document.getElementById('landing-stage');
+      const mainApp = document.getElementById('main-app');
+
+      // Trigger 3D Book Cover Fold Open Animation
+      bookContainer.classList.add('book-open');
+
+      // Auto start royal acoustic background melody on first interactive gesture
+      try {
+        if (!isPlayingMusic) toggleMusic();
+      } catch(e) {}
+
+      setTimeout(() => {
+        landingStage.classList.add('opacity-0', 'pointer-events-none');
+        mainApp.classList.remove('opacity-0');
+      }, 900);
+    });
+
+    /* --------------------------------------------------------
+       L. EVENT LISTENERS FOR MODALS & DRAWERS
+    -------------------------------------------------------- */
+    document.getElementById('open-cart-btn').addEventListener('click', () => toggleCartDrawer(true));
+    document.getElementById('close-cart-btn').addEventListener('click', () => toggleCartDrawer(false));
+    document.getElementById('cart-drawer-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'cart-drawer-backdrop') toggleCartDrawer(false);
+    });
+
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+      document.getElementById('item-modal').classList.add('hidden');
+      document.getElementById('item-modal').classList.remove('flex');
+    });
+
+    document.getElementById('info-btn').addEventListener('click', () => {
+      document.getElementById('info-modal').classList.remove('hidden');
+      document.getElementById('info-modal').classList.add('flex');
+    });
+    document.getElementById('close-info-btn').addEventListener('click', () => {
+      document.getElementById('info-modal').classList.add('hidden');
+      document.getElementById('info-modal').classList.remove('flex');
+    });
+
+    document.getElementById('music-btn').addEventListener('click', toggleMusic);
+
+    /* --------------------------------------------------------
+       INITIALIZATION ON LOAD
+    -------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      initAmbientParticles();
+      renderCategoryNavigation();
+      renderMenuCards();
+      renderCartUI();
+    });
+  </script>
+
+</body>
+</html>
